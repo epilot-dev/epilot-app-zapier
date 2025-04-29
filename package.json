@@ -1,0 +1,33 @@
+{
+  "name": "epilot-app-zapier",
+  "version": "0.0.1",
+  "description": "Use the Zapier platform with 7,000+ integrations to together with epilot XRM.",
+  "main": "index.js",
+  "scripts": {
+    "build": "sst build",
+    "console": "sst console",
+    "deploy": "sst deploy",
+    "dev": "sst dev",
+    "remove": "sst remove",
+    "typecheck": "tsc --noEmit",
+    "openapi": "openapi read --json > src/openapi.json && openapi typegen > src/openapi.d.ts",
+    "typegen": "openapi typegen"
+  },
+  "keywords": [
+    "epilot",
+    "app",
+    "zapier"
+  ],
+  "author": "epilot GmbH",
+  "license": "MIT",
+  "dependencies": {
+    "openapi-backend": "^5.12.0",
+    "sst": "3.13.20"
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.1",
+    "@types/aws-lambda": "8.10.149",
+    "openapicmd": "^2.6.1",
+    "typescript": "^5.8.3"
+  }
+}
