@@ -5,6 +5,10 @@
 
 declare module "sst" {
   export interface Resource {
+    "Frontend": {
+      "type": "sst.aws.StaticSite"
+      "url": string
+    }
     "ZapierApi": {
       "type": "sst.aws.ApiGatewayV2"
       "url": string

@@ -10,8 +10,10 @@
     "dev": "sst dev",
     "remove": "sst remove",
     "typecheck": "tsc --noEmit",
-    "openapi": "openapi read --json > src/openapi.json && openapi typegen > src/openapi.d.ts",
-    "typegen": "openapi typegen"
+    "openapi": "openapi read --json > api/openapi.json && openapi typegen > api/openapi.d.ts",
+    "typegen": "openapi typegen",
+    "swagger": "openapi swagger-ui --port 9001 --proxy -S  https://5epshs24ye.execute-api.eu-central-1.amazonaws.com",
+    "swagger:watch": "nodemon -w ./openapi.yml -x npm run swagger"
   },
   "keywords": [
     "epilot",
@@ -21,13 +23,15 @@
   "author": "epilot GmbH",
   "license": "MIT",
   "dependencies": {
+    "@aws-lambda-powertools/logger": "^2.19.0",
     "openapi-backend": "^5.12.0",
     "sst": "3.13.20"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.1",
     "@types/aws-lambda": "8.10.149",
-    "openapicmd": "^2.6.1",
+    "nodemon": "^3.1.10",
+    "openapicmd": "^2.6.2",
     "typescript": "^5.8.3"
   }
 }

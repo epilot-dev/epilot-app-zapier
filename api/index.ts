@@ -1,11 +1,15 @@
 import { OpenAPIBackend, type Request } from "openapi-backend";
 import Lambda from "aws-lambda";
 import { definition } from "./definition";
+import { Logger } from '@aws-lambda-powertools/logger';
+
 
 const headers = {
   "content-type": "application/json",
   "access-control-allow-origin": "*",
 };
+
+const logger = new Logger({ serviceName: 'zapier-app' });
 
 const api = new OpenAPIBackend({ definition, quick: true });
 
@@ -30,6 +34,11 @@ api.register({
       body: JSON.stringify(mock),
       headers,
     };
+  },
+  postResponseHandler: async (c, event: Lambda.APIGatewayProxyEventV2) => {
+    logger.info('done', { request: c.request, event })
+
+    return c.response
   }
 });
 

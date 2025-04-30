@@ -15,9 +15,20 @@ export default $config({
     });
 
     api.route("ANY /{proxy+}", {
-      handler: "src/index.handler",
+      handler: "api/index.handler",
       runtime: "nodejs22.x",
       architecture: 'arm64',
+    });
+
+    const app = new sst.aws.StaticSite("Frontend", {
+      path: "app/",
+      build: {
+        output: "dist",
+        command: "npm run build",
+      },
+      environment: {
+        VITE_API_URL: api.url,
+      },
     });
   }
 });

@@ -1,0 +1,123 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "epilot Zapier App",
+    "version": "1.0.0",
+    "contact": {
+      "name": "epilot GmbH",
+      "url": "https://epilot.cloud"
+    },
+    "description": "Use the Zapier platform with 7,000+ integrations to together with epilot XRM."
+  },
+  "servers": [
+    {
+      "url": "https://zapier.sls.epilot.io"
+    }
+  ],
+  "tags": [
+    {
+      "name": "hooks"
+    }
+  ],
+  "paths": {
+    "/hooks/receive": {
+      "post": {
+        "operationId": "receiveHook",
+        "summary": "receiveHook",
+        "description": "Receive an automation action from epilot to forward to zapier",
+        "tags": [
+          "hooks"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Received successfully"
+          }
+        }
+      }
+    },
+    "/hooks/subscribe": {
+      "post": {
+        "operationId": "subscribeHook",
+        "summary": "subscribeHook",
+        "description": "Subscribe a zapier trigger hook",
+        "tags": [
+          "hooks"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "hookUrl": {
+                    "type": "string",
+                    "description": "The url of the zapier trigger hook",
+                    "format": "uri"
+                  }
+                },
+                "required": [
+                  "hookUrl"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Subscribed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The id of the subscription",
+                      "example": "58b9aa09-969e-4d46-8d4b-8f6c0aa91de8"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hooks/unsubscribe": {
+      "delete": {
+        "operationId": "unsubscribeHook",
+        "summary": "unsubscribeHook",
+        "description": "Unsubscribe a zapier trigger hook",
+        "tags": [
+          "hooks"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The id of the subscription",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The id of the subscription",
+              "example": "58b9aa09-969e-4d46-8d4b-8f6c0aa91de8"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
