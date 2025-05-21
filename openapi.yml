@@ -24,9 +24,47 @@ paths:
             schema:
               type: object
               additionalProperties: true
+              properties:
+                org_id:
+                  type: string
+                  description: The id of the epilot organization
+                  example: "123"
+                action_config:
+                  type: object
+                  properties:
+                    subscriptionId:
+                      type: string
+                      description: The id of the selected subscription for the automation action
+                      example: 58b9aa09-969e-4d46-8d4b-8f6c0aa91de8
+                  required:
+                    - subscriptionId
+              required:
+                - org_id
+                - action_config
       responses:
         "200":
           description: Received successfully
+  /hooks/subscriptions:
+    get:
+      operationId: listHookSubscriptions
+      summary: listHookSubscriptions
+      description: List all hook subscriptions for an organization
+      tags:
+        - hooks
+      responses:
+        "200":
+          description: List of subscriptions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subscriptions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Subscription"
+                required:
+                  - subscriptions
   /hooks/subscribe:
     post:
       operationId: subscribeHook
@@ -44,6 +82,13 @@ paths:
                   type: string
                   description: The url of the zapier trigger hook
                   format: uri
+                zapId:
+                  type: string
+                  description: The id of the zapier zap integration
+                  example: 58b9aa09-969e-4d46-8d4b-8f6c0aa91de8
+                triggerName:
+                  type: string
+                  description: The user provided name of the zapier trigger
               required:
                 - hookUrl
       responses:
@@ -52,14 +97,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    description: The id of the subscription
-                    example: 58b9aa09-969e-4d46-8d4b-8f6c0aa91de8
-                required:
-                  - id
+                $ref: "#/components/schemas/Subscription"
   /hooks/unsubscribe:
     delete:
       operationId: unsubscribeHook
@@ -76,3 +114,41 @@ paths:
             type: string
             description: The id of the subscription
             example: 58b9aa09-969e-4d46-8d4b-8f6c0aa91de8
+      responses:
+        "200":
+          description: Deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subscription"
+      
+security:
+  - accessToken: []
+
+components:
+  schemas:
+    Subscription:
+      type: object
+      properties:
+        id:
+          description: The id of the subscription
+          type: string
+        triggerName:
+          description: The user provided name for the zapier trigger
+          type: string
+        zapId:
+          description: The id of the zapier zap integration
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - createdAt
+
+  securitySchemes:
+    accessToken:
+      type: http
+      scheme: bearer
+      description: Authorization header with epilot access token
+      bearerFormat: JWT

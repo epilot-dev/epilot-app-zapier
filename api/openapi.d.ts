@@ -1,15 +1,52 @@
 import type {
-  OpenAPIClient,
-  Parameters,
-  UnknownParamsObject,
-  OperationResponse,
-  AxiosRequestConfig,
-} from 'openapi-client-axios';
+  Context,
+  UnknownParams,
+} from 'openapi-backend';
 
+declare namespace Components {
+    namespace Schemas {
+        export interface Subscription {
+            /**
+             * The id of the subscription
+             */
+            id: string;
+            /**
+             * The user provided name for the zapier trigger
+             */
+            triggerName?: string;
+            /**
+             * The id of the zapier zap integration
+             */
+            zapId?: string;
+            createdAt: string; // date-time
+        }
+    }
+}
 declare namespace Paths {
+    namespace ListHookSubscriptions {
+        namespace Responses {
+            export interface $200 {
+                subscriptions: Components.Schemas.Subscription[];
+            }
+        }
+    }
     namespace ReceiveHook {
         export interface RequestBody {
             [name: string]: any;
+            /**
+             * The id of the epilot organization
+             * example:
+             * 123
+             */
+            org_id: string;
+            action_config: {
+                /**
+                 * The id of the selected subscription for the automation action
+                 * example:
+                 * 58b9aa09-969e-4d46-8d4b-8f6c0aa91de8
+                 */
+                subscriptionId: string;
+            };
         }
         namespace Responses {
             export interface $200 {
@@ -22,16 +59,19 @@ declare namespace Paths {
              * The url of the zapier trigger hook
              */
             hookUrl: string; // uri
+            /**
+             * The id of the zapier zap integration
+             * example:
+             * 58b9aa09-969e-4d46-8d4b-8f6c0aa91de8
+             */
+            zapId?: string;
+            /**
+             * The user provided name of the zapier trigger
+             */
+            triggerName?: string;
         }
         namespace Responses {
-            export interface $201 {
-                /**
-                 * The id of the subscription
-                 * example:
-                 * 58b9aa09-969e-4d46-8d4b-8f6c0aa91de8
-                 */
-                id: string;
-            }
+            export type $201 = Components.Schemas.Subscription;
         }
     }
     namespace UnsubscribeHook {
@@ -51,83 +91,69 @@ declare namespace Paths {
              */
             Parameters.Id;
         }
+        namespace Responses {
+            export type $200 = Components.Schemas.Subscription;
+        }
     }
 }
 
 
-export interface OperationMethods {
+export interface Operations {
   /**
-   * receiveHook - receiveHook
-   * 
-   * Receive an automation action from epilot to forward to zapier
+   * POST /hooks/receive
    */
-  'receiveHook'(
-    parameters?: Parameters<UnknownParamsObject> | null,
-    data?: Paths.ReceiveHook.RequestBody,
-    config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ReceiveHook.Responses.$200>
-  /**
-   * subscribeHook - subscribeHook
-   * 
-   * Subscribe a zapier trigger hook
-   */
-  'subscribeHook'(
-    parameters?: Parameters<UnknownParamsObject> | null,
-    data?: Paths.SubscribeHook.RequestBody,
-    config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.SubscribeHook.Responses.$201>
-  /**
-   * unsubscribeHook - unsubscribeHook
-   * 
-   * Unsubscribe a zapier trigger hook
-   */
-  'unsubscribeHook'(
-    parameters?: Parameters<Paths.UnsubscribeHook.QueryParameters> | null,
-    data?: any,
-    config?: AxiosRequestConfig  
-  ): OperationResponse<any>
-}
-
-export interface PathsDictionary {
-  ['/hooks/receive']: {
-    /**
-     * receiveHook - receiveHook
-     * 
-     * Receive an automation action from epilot to forward to zapier
-     */
-    'post'(
-      parameters?: Parameters<UnknownParamsObject> | null,
-      data?: Paths.ReceiveHook.RequestBody,
-      config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ReceiveHook.Responses.$200>
+  ['receiveHook']: {
+    requestBody: Paths.ReceiveHook.RequestBody;
+    params: UnknownParams;
+    query: UnknownParams;
+    headers: UnknownParams;
+    cookies: UnknownParams;
+    context: Context<Paths.ReceiveHook.RequestBody, UnknownParams, UnknownParams, UnknownParams, UnknownParams>;
+    response: Paths.ReceiveHook.Responses.$200;
   }
-  ['/hooks/subscribe']: {
-    /**
-     * subscribeHook - subscribeHook
-     * 
-     * Subscribe a zapier trigger hook
-     */
-    'post'(
-      parameters?: Parameters<UnknownParamsObject> | null,
-      data?: Paths.SubscribeHook.RequestBody,
-      config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.SubscribeHook.Responses.$201>
+  /**
+   * GET /hooks/subscriptions
+   */
+  ['listHookSubscriptions']: {
+    requestBody: any;
+    params: UnknownParams;
+    query: UnknownParams;
+    headers: UnknownParams;
+    cookies: UnknownParams;
+    context: Context<any, UnknownParams, UnknownParams, UnknownParams, UnknownParams>;
+    response: Paths.ListHookSubscriptions.Responses.$200;
   }
-  ['/hooks/unsubscribe']: {
-    /**
-     * unsubscribeHook - unsubscribeHook
-     * 
-     * Unsubscribe a zapier trigger hook
-     */
-    'delete'(
-      parameters?: Parameters<Paths.UnsubscribeHook.QueryParameters> | null,
-      data?: any,
-      config?: AxiosRequestConfig  
-    ): OperationResponse<any>
+  /**
+   * POST /hooks/subscribe
+   */
+  ['subscribeHook']: {
+    requestBody: Paths.SubscribeHook.RequestBody;
+    params: UnknownParams;
+    query: UnknownParams;
+    headers: UnknownParams;
+    cookies: UnknownParams;
+    context: Context<Paths.SubscribeHook.RequestBody, UnknownParams, UnknownParams, UnknownParams, UnknownParams>;
+    response: Paths.SubscribeHook.Responses.$201;
+  }
+  /**
+   * DELETE /hooks/unsubscribe
+   */
+  ['unsubscribeHook']: {
+    requestBody: any;
+    params: UnknownParams;
+    query: Paths.UnsubscribeHook.QueryParameters;
+    headers: UnknownParams;
+    cookies: UnknownParams;
+    context: Context<any, UnknownParams, Paths.UnsubscribeHook.QueryParameters, UnknownParams, UnknownParams>;
+    response: Paths.UnsubscribeHook.Responses.$200;
   }
 }
 
-export type Client = OpenAPIClient<OperationMethods, PathsDictionary>
+export type OperationContext<operationId extends keyof Operations> = Operations[operationId]["context"];
+export type OperationResponse<operationId extends keyof Operations> = Operations[operationId]["response"];
+export type HandlerResponse<ResponseBody, ResponseModel = Record<string, any>> = ResponseModel & { _t?: ResponseBody };
+export type OperationHandlerResponse<operationId extends keyof Operations> = HandlerResponse<OperationResponse<operationId>>;
+export type OperationHandler<operationId extends keyof Operations, HandlerArgs extends unknown[] = unknown[]> = (...params: [OperationContext<operationId>, ...HandlerArgs]) => Promise<OperationHandlerResponse<operationId>>;
 
 
-
+export type Subscription = Components.Schemas.Subscription;

@@ -1,21 +1,24 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import { epilot } from '@epilot/app-bridge';
+import { apiClient } from './api';
+import { useQuery } from '@tanstack/react-query';
+import { Subscription } from './openapi';
 
 function App() {
-  const [selectedZap, setSelectedZap] = useState<number | null>(null)
-  const zaps = [
-    { id: 1, name: 'New Email to Google Sheets' },
-    { id: 2, name: 'New Trello Card from Slack Message' },
-    { id: 3, name: 'New Shopify Order to Slack' },
-  ]
+  const [subscriptionId, setSubscriptionId] = useState<string | null>(null)
+
+  const subscriptionsQuery = useQuery({
+    queryKey: ['subscriptions'], 
+    queryFn: () => apiClient.listHookSubscriptions().then((res) => res.data),
+  });
 
   useEffect(() => {
     const unsubscribe = epilot.subscribeToParentMessages('init-action-config', (message) => {
       const config = message.data?.config?.custom_action_config;
 
       if (config) {
-        setSelectedZap(config.selectedZap)
+        setSubscriptionId(config.selectedSubscription)
       }
     })
 
@@ -24,26 +27,26 @@ function App() {
     }
   }, [])
 
-  const handleChange = (zap: typeof zaps[number]) => {
-    setSelectedZap(zap.id);
+  const handleChange = (sub: Subscription) => {
+    setSubscriptionId(sub.id);
 
-    epilot.sendMessageToParent('update-action-config', { config: { selectedZap: zap.id } });
+    epilot.sendMessageToParent('update-action-config', { config: { subscriptionId: sub.id } });
   };
 
   return (
     <div className="min-h-screen p-6">
-      <h1 className="text-3xl font-bold text-center mb-6">Select a Zap</h1>
+      <h1 className="text-3xl font-bold text-center mb-6">Select a Trigger</h1>
       <div className="max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden">
         <ul>
-          {zaps.map((zap) => (
+          {subscriptionsQuery.data?.subscriptions?.map((sub) => (
             <li
-              key={zap.id}
+              key={sub.id}
               className={`p-4 border-b hover:bg-gray-100 cursor-pointer ${
-                selectedZap === zap.id ? 'bg-blue-100' : ''
+                subscriptionId === sub.id ? 'bg-blue-100' : ''
               }`}
-              onClick={() => handleChange(zap)}
+              onClick={() => handleChange(sub)}
             >
-              {zap.name}
+              {sub.triggerName || sub.zapId || sub.id}
             </li>
           ))}
         </ul>

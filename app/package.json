@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 9020",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -12,6 +12,8 @@
   "dependencies": {
     "@epilot/app-bridge": "^0.0.1-alpha.8",
     "@tailwindcss/vite": "^4.1.4",
+    "@tanstack/react-query": "^5.76.1",
+    "openapi-client-axios": "^7.6.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwindcss": "^4.1.4"

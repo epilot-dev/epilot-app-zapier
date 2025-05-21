@@ -11,14 +11,41 @@ export default $config({
   },
   async run() {
     const api = new sst.aws.ApiGatewayV2("ZapierApi", {
-//      domain: "api.example.com",
+      // domain: "api.example.com",
+      cors: {
+        allowOrigins: ["*"],
+        allowHeaders: ["Content-Type", "Authorization"],
+        allowMethods: ["GET", "POST", "DELETE", "OPTIONS"],
+      }
     });
 
-    api.route("ANY /{proxy+}", {
-      handler: "api/index.handler",
-      runtime: "nodejs22.x",
-      architecture: 'arm64',
+    const table = new sst.aws.Dynamo("ZapierIntegrationTable", {
+      fields: {
+        pk: 'string',
+        sk: 'string',
+      },
+      primaryIndex: {
+        hashKey: 'pk',
+        rangeKey: 'sk'
+      }
     });
+
+    for (const method of ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']) {
+      api.route(`${method} /{proxy+}`, {
+        handler: "api/index.handler",
+        runtime: "nodejs22.x",
+        architecture: 'arm64',
+        environment: {
+          DDB_ZAPIER_INTEGRATION_TABLE: table.name,
+        },
+        permissions: [
+          {
+            actions: ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:DeleteItem", "dynamodb:Query"],
+            resources: [table.arn],
+          }
+        ],
+      });
+    }
 
     const app = new sst.aws.StaticSite("Frontend", {
       path: "app/",

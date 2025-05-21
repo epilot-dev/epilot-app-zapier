@@ -1,50 +1,45 @@
 import { OpenAPIBackend, type Request } from "openapi-backend";
 import Lambda from "aws-lambda";
 import { definition } from "./definition";
-import { Logger } from '@aws-lambda-powertools/logger';
-
-
-const headers = {
-  "content-type": "application/json",
-  "access-control-allow-origin": "*",
-};
-
-const logger = new Logger({ serviceName: 'zapier-app' });
+import * as hooksHandlers from "./hooks/hooks-handlers";
+import { handleErrors, replyJSON } from "./utils/lambda";
+import { logger } from "./utils/logger";
 
 const api = new OpenAPIBackend({ definition, quick: true });
 
 api.register({
-  notFound: async (c, event: Lambda.APIGatewayProxyEventV2) => ({
-    statusCode: 404,
-    body: JSON.stringify({ err: "not found" }),
-    headers,
-  }),
-  validationFail: async (c, event: Lambda.APIGatewayProxyEventV2) => ({
-    statusCode: 400,
-    body: JSON.stringify({ err: c.validation.errors }),
-    headers,
-  }),
-  notImplemented: async (c, event: Lambda.APIGatewayProxyEventV2) => {
+  // hooks handlers
+  listHookSubscriptions: hooksHandlers.listHookSubscriptions,
+  subscribeHook: hooksHandlers.subscribeHook,
+  unsubscribeHook: hooksHandlers.unsubscribeHook,
+  receiveHook: hooksHandlers.receiveHook,
+
+  // default handlers
+  notFound: () => replyJSON(
+    {err: "not found"},
+    { statusCode: 404 }
+  ),
+  validationFail: (c) => replyJSON(
+    { err: c.validation.errors },
+    { statusCode: 400 }
+  ),
+  notImplemented: async (c, _event: Lambda.APIGatewayProxyEventV2) => {
     const { status, mock } = c.api.mockResponseForOperation(
       c.operation.operationId!
     );
 
-    return {
-      statusCode: status,
-      body: JSON.stringify(mock),
-      headers,
-    };
+    return replyJSON(mock, { statusCode: status })
   },
-  postResponseHandler: async (c, event: Lambda.APIGatewayProxyEventV2) => {
-    logger.info('done', { request: c.request, event })
+  postResponseHandler: async (c, _event: Lambda.APIGatewayProxyEventV2) => {
+    logger.info('done', { status: c.response.statusCode, operation: c.operation?.operationId, response: c.response, request: c.request })
 
     return c.response
   }
 });
 
-api.init();
-
 export async function handler(event: Lambda.APIGatewayProxyEventV2, context: Lambda.Context) {
+  await api.init();
+
   return await api.handleRequest(
     {
       method: event.requestContext.http.method,
@@ -55,5 +50,5 @@ export async function handler(event: Lambda.APIGatewayProxyEventV2, context: Lam
     },
     event,
     context
-  );
+  ).catch(handleErrors);
 };
