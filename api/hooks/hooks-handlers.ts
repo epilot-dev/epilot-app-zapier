@@ -30,7 +30,7 @@ export const subscribeHook: OperationHandler<'subscribeHook'> = async (c) => {
     Item: item,
   });
 
-  return replyJSON({ id: subscriptionId, triggerName, zapId, createdAt });
+  return replyJSON({ id: subscriptionId, triggerName, zapId: fullZapId, createdAt });
 };
 
 export const unsubscribeHook: OperationHandler<'unsubscribeHook'> = async (c) => {
