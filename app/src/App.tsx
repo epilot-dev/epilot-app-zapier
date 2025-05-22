@@ -64,29 +64,41 @@ function App() {
           <Text as="label">Select Zapier Trigger: <Tooltip content="Install the epilot App on Zapier to create a Trigger"><InfoIcon className="inline-block" /></Tooltip></Text>
           
           <div className="flex items-center gap-2">
-              <Select.Root size="3" onValueChange={handleChange} value={subscriptionId ?? ""} >
+              <Select.Root size="3" onValueChange={handleChange} value={currentSubscription ? subscriptionId! : undefined}>
                 <Select.Trigger
                   placeholder="Select a trigger"
                   variant="surface"
                   className="w-full"
                 />
+
                 <Select.Content variant="solid" className="shadow-none">
                   {subscriptions?.map((sub) => (
                     <Select.Item key={sub.id} value={sub.id}>{sub.triggerName} ({sub.zapId})</Select.Item>
                   ))}
 
-                  {!!subscriptions?.length && (
-                    <Select.Separator />
+                  {!!subscriptions.length && (
+                    <>
+                      <Select.Separator />
+                      <Select.Group className="py-2 px-1 pr-4">
+                        <a href={ZAPIER_SETUP_URL} target="_blank" rel="noreferrer">
+                          <div className="flex items-center gap-2">
+                            <AddIcon />
+                            <span>Create Zapier Integration</span>
+                          </div>
+                        </a>
+                      </Select.Group>
+                    </>
                   )}
 
-                  <Select.Group className="py-2 px-1 pr-4">
-                    <a href={ZAPIER_SETUP_URL} target="_blank" rel="noreferrer">
+                  {!subscriptions.length && (
+                    <Select.Item value="new" className="hidden">
                       <div className="flex items-center gap-2">
                         <AddIcon />
                         <span>Create Zapier Integration</span>
                       </div>
-                    </a>
-                  </Select.Group>
+                    </Select.Item>
+                  )}
+                  
                 </Select.Content>
               </Select.Root>
 

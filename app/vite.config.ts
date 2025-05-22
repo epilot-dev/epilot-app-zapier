@@ -8,5 +8,6 @@ export default defineConfig({
   build: {
     // NOTE: Needed when deploying
     chunkSizeWarningLimit: 800,
-  }
+  },
+  base: './', // app-bridge apps are served from a relative path
 })
