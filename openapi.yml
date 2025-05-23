@@ -89,6 +89,12 @@ paths:
                 triggerName:
                   type: string
                   description: The user provided name of the zapier trigger
+                isTestingAuth:
+                  description: Whether this is a temporary subscription for testing the auth flow
+                  type: boolean
+                isLoadingSample:
+                  description: Whether this is a temporary subscription for loading the sample integration
+                  type: boolean
               required:
                 - hookUrl
       responses:

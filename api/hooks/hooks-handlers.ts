@@ -10,11 +10,39 @@ import createHttpError from 'http-errors';
 
 export const subscribeHook: OperationHandler<'subscribeHook'> = async (c) => {
   const { orgId } = verifyToken(c);
-  const { hookUrl, zapId, triggerName } = c.request.requestBody;
+  const { hookUrl, zapId, triggerName, isTestingAuth, isLoadingSample } = c.request.requestBody;
 
-  const subscriptionId = uuidv4();
+  // check for previous subscriptions with the same triggerName 
+  const prevSubscriptions = await dynamodb.query({
+    TableName: config.ZAPIER_INTEGRATION_TABLE,
+    KeyConditionExpression: "pk = :pk",
+    ExpressionAttributeValues: {
+      ":pk": `ORG#${orgId}`,
+      ":triggerName": triggerName,
+    },
+    FilterExpression: "triggerName = :triggerName",
+  }).then((res) => res.Items ?? []);
+
+  // sort subscriptions by createdAt descending
+  prevSubscriptions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+  // use the id if there is a previous subscription, otherwise generate a new one
+  const subscriptionId = prevSubscriptions[0]?.id || uuidv4();
+
+  if (prevSubscriptions.length) {
+    logger.info('cleaning up old subscriptions', { orgId, testSubscriptions: prevSubscriptions });
+    for (const testSubscription of prevSubscriptions) {
+      await dynamodb.delete({
+        TableName: config.ZAPIER_INTEGRATION_TABLE,
+        Key: {
+          pk: `ORG#${orgId}`,
+          sk: `SUBSCRIPTION#${testSubscription.id}`,
+        },
+      });
+    }
+  }
+
   const createdAt = new Date().toISOString();
-
   const item = {
     pk: `ORG#${orgId}`,
     sk: `SUBSCRIPTION#${subscriptionId}`,
@@ -23,6 +51,8 @@ export const subscribeHook: OperationHandler<'subscribeHook'> = async (c) => {
     zapId,
     triggerName,
     createdAt,
+    isTestingAuth,
+    isLoadingSample,
   };
 
   await dynamodb.put({
@@ -79,7 +109,7 @@ export const listHookSubscriptions: OperationHandler<'listHookSubscriptions'> = 
 };
 
 export const receiveHook: OperationHandler<'receiveHook'> = async (c) => {
-  logger.info('receiveHook', { request: c.request.requestBody });
+  logger.debug('receiveHook start', { request: c.request.requestBody });
 
   // @TODO: verify signature
 
@@ -103,12 +133,15 @@ export const receiveHook: OperationHandler<'receiveHook'> = async (c) => {
    * Forward payload to zapier hookUrl
    */
   const hookUrl = subscription.Item.hookUrl;
-  const axiosRes = await axios.post(hookUrl, c.request.requestBody, {
+  const zapierResponse = await axios.post(hookUrl, c.request.requestBody, {
     headers: {
       'Content-Type': 'application/json',
       'User-Agent': "epilot-zapier-app",
-    }
+    },
+    validateStatus: () => true, // pass through all status codes
   });
 
-  return replyJSON(axiosRes.data, { statusCode: 200, headers: axiosRes.headers as any });
+  logger.info('receiveHook finished', { zapierResponse });
+
+  return replyJSON(zapierResponse.data, { statusCode: zapierResponse.status, headers: zapierResponse.headers as any });
 };

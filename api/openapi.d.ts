@@ -69,6 +69,14 @@ declare namespace Paths {
              * The user provided name of the zapier trigger
              */
             triggerName?: string;
+            /**
+             * Whether this is a temporary subscription for testing the auth flow
+             */
+            isTestingAuth?: boolean;
+            /**
+             * Whether this is a temporary subscription for loading the sample integration
+             */
+            isLoadingSample?: boolean;
         }
         namespace Responses {
             export type $201 = Components.Schemas.Subscription;

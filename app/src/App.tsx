@@ -6,6 +6,7 @@ import { Select, Text, Tooltip } from '@epilot/core-ui';
 import AddIcon from '@epilot360/icons/react/Add'
 import InfoIcon from '@epilot360/icons/react/Info'
 import OpenInNewIcon from '@epilot360/icons/react/OpenInNew'
+import RefreshIcon from '@epilot360/icons/react/Refresh'
 import zapierLogo from './zapier.svg'
 import './App.css'
 
@@ -69,6 +70,7 @@ function App() {
                   placeholder="Select a trigger"
                   variant="surface"
                   className="w-full"
+                  disabled={subscriptionsQuery.isFetching}
                 />
 
                 <Select.Content variant="solid" className="shadow-none">
@@ -107,6 +109,10 @@ function App() {
                   <OpenInNewIcon className="w-6 h-6" fill="var(--blue-10)" />
                 </a>
               )}
+
+              <button onClick={() => subscriptionsQuery.refetch()} disabled={subscriptionsQuery.isFetching}>
+                <RefreshIcon className="w-6 h-6" fill={subscriptionsQuery.isFetching ? 'var(--gray-10)' : 'var(--blue-10)'} />
+              </button>
           </div>
         </div>
       )}
