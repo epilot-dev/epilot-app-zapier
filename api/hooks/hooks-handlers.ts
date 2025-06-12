@@ -2,11 +2,11 @@ import { dynamodb } from '../dynamodb/dynamodb-client';
 import { v4 as uuidv4 } from 'uuid';  // Ensure this package is added to your project
 import { replyJSON } from "../utils/lambda";
 import { OperationHandler } from "../openapi";
-import { config } from "../config";
 import { verifyToken } from "../utils/auth";
 import { logger } from '../utils/logger';
 import axios from 'axios';
 import createHttpError from 'http-errors';
+import { Resource } from 'sst';
 
 export const subscribeHook: OperationHandler<'subscribeHook'> = async (c) => {
   const { orgId } = verifyToken(c);
@@ -14,7 +14,7 @@ export const subscribeHook: OperationHandler<'subscribeHook'> = async (c) => {
 
   // check for previous subscriptions with the same triggerName 
   const prevSubscriptions = await dynamodb.query({
-    TableName: config.ZAPIER_INTEGRATION_TABLE,
+    TableName: Resource.ZapierIntegrationTable.name,
     KeyConditionExpression: "pk = :pk",
     ExpressionAttributeValues: {
       ":pk": `ORG#${orgId}`,
@@ -33,7 +33,7 @@ export const subscribeHook: OperationHandler<'subscribeHook'> = async (c) => {
     logger.info('cleaning up old subscriptions', { orgId, testSubscriptions: prevSubscriptions });
     for (const testSubscription of prevSubscriptions) {
       await dynamodb.delete({
-        TableName: config.ZAPIER_INTEGRATION_TABLE,
+        TableName: Resource.ZapierIntegrationTable.name,
         Key: {
           pk: `ORG#${orgId}`,
           sk: `SUBSCRIPTION#${testSubscription.id}`,
@@ -56,7 +56,7 @@ export const subscribeHook: OperationHandler<'subscribeHook'> = async (c) => {
   };
 
   await dynamodb.put({
-    TableName: config.ZAPIER_INTEGRATION_TABLE,
+    TableName: Resource.ZapierIntegrationTable.name,
     Item: item,
   });
 
@@ -68,7 +68,7 @@ export const unsubscribeHook: OperationHandler<'unsubscribeHook'> = async (c) =>
   const subscriptionId = c.request.query.id;
 
   const deleteRes = await dynamodb.delete({
-    TableName: config.ZAPIER_INTEGRATION_TABLE,
+    TableName: Resource.ZapierIntegrationTable.name,
     Key: {
       pk: `ORG#${orgId}`,
       sk: `SUBSCRIPTION#${subscriptionId}`,
@@ -88,7 +88,7 @@ export const listHookSubscriptions: OperationHandler<'listHookSubscriptions'> = 
   const { orgId } = verifyToken(c);
 
   const result = await dynamodb.query({
-    TableName: config.ZAPIER_INTEGRATION_TABLE,
+    TableName: Resource.ZapierIntegrationTable.name,
     KeyConditionExpression: "pk = :pk",
     ExpressionAttributeValues: {
       ":pk": `ORG#${orgId}`,
@@ -114,11 +114,11 @@ export const receiveHook: OperationHandler<'receiveHook'> = async (c) => {
   // @TODO: verify signature
 
   // get subscription by the configured subscriptionId
-  const subscriptionId = c.request.requestBody.action_config.subscriptionId;
-  const orgId = c.request.requestBody.org_id;
+  const subscriptionId = c.request.requestBody.data.action_config.subscriptionId;
+  const orgId = c.request.requestBody.data.org_id;
 
   const subscription = await dynamodb.get({
-    TableName: config.ZAPIER_INTEGRATION_TABLE,
+    TableName: Resource.ZapierIntegrationTable.name,
     Key: {
       pk: `ORG#${orgId}`,
       sk: `SUBSCRIPTION#${subscriptionId}`,

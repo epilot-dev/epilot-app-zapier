@@ -10,7 +10,7 @@
     "dev": "sst dev",
     "remove": "sst remove",
     "typecheck": "tsc --noEmit",
-    "openapi": "openapi read --json > api/openapi.json && openapi read --json > app/src/openapi.json && openapi typegen --backend > api/openapi.d.ts && openapi typegen --client > app/src/openapi.d.ts",
+    "openapi": "openapi read openapi.yml --json > api/openapi.json && openapi read openapi.yml --json > app/src/openapi.json && openapi typegen openapi.yml --backend > api/openapi.d.ts && openapi typegen openapi.yml --client > app/src/openapi.d.ts",
     "swagger": "openapi swagger-ui --port 9001 --proxy -S  https://5epshs24ye.execute-api.eu-central-1.amazonaws.com",
     "swagger:watch": "nodemon -w ./openapi.yml -x npm run swagger"
   },

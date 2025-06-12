@@ -35,24 +35,42 @@ declare namespace Paths {
     }
     namespace ReceiveHook {
         export interface RequestBody {
-            [name: string]: any;
             /**
-             * The id of the epilot organization
+             * The timestamp of the action
              * example:
-             * 123
+             * 2023-10-01T12:00:00Z
              */
-            org_id: string;
-            action_config: {
+            timestamp?: string; // date-time
+            /**
+             * The data to be forwarded to the zapier trigger
+             */
+            data: {
                 /**
-                 * The id of the selected subscription for the automation action
+                 * The id of the epilot organization
                  * example:
-                 * 58b9aa09-969e-4d46-8d4b-8f6c0aa91de8
+                 * 123
                  */
-                subscriptionId: string;
+                org_id: string;
+                action_config: {
+                    /**
+                     * The id of the selected subscription for the automation action
+                     * example:
+                     * 58b9aa09-969e-4d46-8d4b-8f6c0aa91de8
+                     */
+                    subscriptionId: string;
+                };
             };
         }
         namespace Responses {
             export interface $200 {
+            }
+            export interface $400 {
+            }
+            export interface $401 {
+            }
+            export interface $403 {
+            }
+            export interface $404 {
             }
         }
     }

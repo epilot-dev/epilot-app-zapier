@@ -1,5 +1,5 @@
 import { OpenAPIBackend, type Request } from "openapi-backend";
-import Lambda from "aws-lambda";
+import type { APIGatewayProxyEventV2, Context } from "aws-lambda";
 import { definition } from "./definition";
 import * as hooksHandlers from "./hooks/hooks-handlers";
 import { handleErrors, replyJSON } from "./utils/lambda";
@@ -23,21 +23,21 @@ api.register({
     { err: c.validation.errors },
     { statusCode: 400 }
   ),
-  notImplemented: async (c, _event: Lambda.APIGatewayProxyEventV2) => {
+  notImplemented: async (c, _event: APIGatewayProxyEventV2) => {
     const { status, mock } = c.api.mockResponseForOperation(
       c.operation.operationId!
     );
 
     return replyJSON(mock, { statusCode: status })
   },
-  postResponseHandler: async (c, _event: Lambda.APIGatewayProxyEventV2) => {
+  postResponseHandler: async (c, _event: APIGatewayProxyEventV2) => {
     logger.info('done', { status: c.response.statusCode, operation: c.operation?.operationId, response: c.response, request: c.request })
 
     return c.response
   }
 });
 
-export async function handler(event: Lambda.APIGatewayProxyEventV2, context: Lambda.Context) {
+export async function handler(event: APIGatewayProxyEventV2, context: Context) {
   await api.init();
 
   return await api.handleRequest(

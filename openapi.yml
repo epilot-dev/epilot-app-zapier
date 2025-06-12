@@ -23,25 +23,43 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: true
               properties:
-                org_id:
+                timestamp: 
                   type: string
-                  description: The id of the epilot organization
-                  example: "123"
-                action_config:
+                  format: date-time
+                  description: The timestamp of the action
+                  example: "2023-10-01T12:00:00Z"
+                data:
                   type: object
+                  description: The data to be forwarded to the zapier trigger
                   properties:
-                    subscriptionId:
+                    org_id:
                       type: string
-                      description: The id of the selected subscription for the automation action
-                      example: 58b9aa09-969e-4d46-8d4b-8f6c0aa91de8
+                      description: The id of the epilot organization
+                      example: "123"
+                    action_config:
+                      type: object
+                      properties:
+                        subscriptionId:
+                          type: string
+                          description: The id of the selected subscription for the automation action
+                          example: 58b9aa09-969e-4d46-8d4b-8f6c0aa91de8
+                      required:
+                        - subscriptionId
                   required:
-                    - subscriptionId
+                    - org_id
+                    - action_config
               required:
-                - org_id
-                - action_config
+                - data
       responses:
+        "400":
+          description: Bad request, missing required fields or invalid data
+        "401":
+          description: Unauthorized, invalid or missing access token
+        "403":
+          description: Forbidden, insufficient permissions
+        "404":
+          description: Not found, organization or subscription not found
         "200":
           description: Received successfully
   /hooks/subscriptions:

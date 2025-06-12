@@ -11,7 +11,6 @@ export default $config({
   },
   async run() {
     const api = new sst.aws.ApiGatewayV2("ZapierApi", {
-      // domain: "api.example.com",
       cors: {
         allowOrigins: ["*"],
         allowHeaders: ["Content-Type", "Authorization"],
@@ -35,9 +34,7 @@ export default $config({
         handler: "api/index.handler",
         runtime: "nodejs22.x",
         architecture: 'arm64',
-        environment: {
-          DDB_ZAPIER_INTEGRATION_TABLE: table.name,
-        },
+        link: [table],
         permissions: [
           {
             actions: ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:DeleteItem", "dynamodb:Query"],
