@@ -6,7 +6,7 @@
   "scripts": {
     "build": "sst build",
     "console": "sst console",
-    "deploy": "sst deploy --stage production",
+    "deploy": "sst deploy",
     "dev": "sst dev",
     "remove": "sst remove",
     "typecheck": "tsc --noEmit",

@@ -9,8 +9,12 @@ export default $config({
       home: "aws",
     };
   },
+
   async run() {
+    const stage = $app.stage.startsWith('prod') ? "" : $app.stage;
+
     const api = new sst.aws.ApiGatewayV2("ZapierApi", {
+      domain: ['zapier-app', 'sls', stage, 'epilot.io'].filter(Boolean).join('.'), 
       cors: {
         allowOrigins: ["*"],
         allowHeaders: ["Content-Type", "Authorization"],
@@ -44,7 +48,7 @@ export default $config({
       });
     }
 
-    const app = new sst.aws.StaticSite("Frontend", {
+    const _app = new sst.aws.StaticSite("Frontend", {
       path: "app/",
       build: {
         output: "dist",
