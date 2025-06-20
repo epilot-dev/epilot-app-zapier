@@ -2,6 +2,7 @@ import { init, epilot } from "@epilot/app-bridge";
 import { useLayoutEffect, useState } from "react";
 import { AppBridgeContext } from "./AppBridgeContext";
 import { apiClient } from "./api";
+import { i18n } from "./i18n";
 
 export const AppBridgeProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
@@ -12,6 +13,10 @@ export const AppBridgeProvider = ({ children }: { children: React.ReactNode }) =
         setToken(message.data.token);
 
         apiClient.defaults.headers.common['Authorization'] = `Bearer ${message.data.token}`;
+      }
+
+      if (message.data?.lang) {
+        i18n.changeLanguage(message.data.lang);
       }
     });
 
