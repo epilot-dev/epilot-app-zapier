@@ -1,0 +1,12 @@
+{
+  "title_step_one": "Verbinde Zapier mit der epilot App",
+  "title_step_two": "Erstelle einen Trigger für epilot in Zapier",
+  "title_step_three": "Wähle den erstellten Zapier-Trigger aus",
+  "settings": "epilot mit Zapier nutzen",
+  "button_new_integration": "Neue Zapier-Integration",
+  "select_trigger": "Trigger auswählen",
+  "option_new_integration": "Neue Zapier-Integration",
+  "loading": "Lädt ...",
+  "documentation": "Dokumentation zur Zapier App",
+  "powered_by_zapier": "Bereitgestellt von <1>Zapier.com</1>"
+}

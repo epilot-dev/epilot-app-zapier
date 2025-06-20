@@ -1,0 +1,12 @@
+{
+  "title_step_one": "Set up Zapier with the epilot App",
+  "title_step_two": "Create a Trigger for epilot in Zapier",
+  "title_step_three": "Select the Zapier Trigger you created",
+  "settings": "Use epilot on Zapier",
+  "button_new_integration": "New Zapier Integration",
+  "select_trigger": "Select a trigger",
+  "option_new_integration": "New Zapier Integration",
+  "loading": "Loading...",
+  "documentation": "Zapier App Documentation",
+  "powered_by_zapier": "Powered by <1>Zapier.com</1>"
+}
