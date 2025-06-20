@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "openapi": "openapi read openapi.yml --json > api/openapi.json && openapi read openapi.yml --json > app/src/openapi.json && openapi typegen openapi.yml --backend > api/openapi.d.ts && openapi typegen openapi.yml --client > app/src/openapi.d.ts",
     "swagger": "openapi swagger-ui --port 9001 --proxy -S  https://5epshs24ye.execute-api.eu-central-1.amazonaws.com",
-    "swagger:watch": "nodemon -w ./openapi.yml -x npm run swagger"
+    "swagger:watch": "nodemon -w ./openapi.yml -x npm run swagger",
+    "zip": "cd app && npm run build && zip -r ../app.zip dist"
   },
   "keywords": [
     "epilot",
