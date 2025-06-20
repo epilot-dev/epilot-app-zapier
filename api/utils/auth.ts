@@ -3,8 +3,15 @@ import jwt from 'jsonwebtoken';
 import createHttpError from "http-errors";
 
 export const verifyToken = (c: Context) => {
-   const authHeader = c.request.headers['authorization'] || c.request.headers['Authorization'];
+  const authHeader = c.request.headers['authorization'] || c.request.headers['Authorization'];
+  if (!authHeader) {
+    throw createHttpError(401, 'Missing authorization header');
+  }
+
   const [, token] = authHeader.split(' ');
+  if (!token) {
+    throw createHttpError(401, 'Missing token');
+  }
   
   // @TODO: check jwks signature and verify the signer is epilot
   const claims = jwt.decode(token);
