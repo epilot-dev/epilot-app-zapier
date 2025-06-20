@@ -49,12 +49,14 @@ declare namespace Paths {
                  */
                 org_id: string;
                 action_config: {
-                    /**
-                     * The id of the selected subscription for the automation action
-                     * example:
-                     * 58b9aa09-969e-4d46-8d4b-8f6c0aa91de8
-                     */
-                    subscriptionId: string;
+                    custom_action_config: {
+                        /**
+                         * The id of the selected subscription for the automation action
+                         * example:
+                         * 58b9aa09-969e-4d46-8d4b-8f6c0aa91de8
+                         */
+                        subscriptionId: string;
+                    };
                 };
             };
         }

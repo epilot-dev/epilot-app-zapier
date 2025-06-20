@@ -114,7 +114,7 @@ export const receiveHook: OperationHandler<'receiveHook'> = async (c) => {
   // @TODO: verify signature
 
   // get subscription by the configured subscriptionId
-  const subscriptionId = c.request.requestBody.data.action_config.subscriptionId;
+  const subscriptionId = c.request.requestBody.data.action_config.custom_action_config.subscriptionId;
   const orgId = c.request.requestBody.data.org_id;
 
   const subscription = await dynamodb.get({

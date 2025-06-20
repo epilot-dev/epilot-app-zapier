@@ -52,14 +52,22 @@
                       "action_config": {
                         "type": "object",
                         "properties": {
-                          "subscriptionId": {
-                            "type": "string",
-                            "description": "The id of the selected subscription for the automation action",
-                            "example": "58b9aa09-969e-4d46-8d4b-8f6c0aa91de8"
+                          "custom_action_config": {
+                            "type": "object",
+                            "properties": {
+                              "subscriptionId": {
+                                "type": "string",
+                                "description": "The id of the selected subscription for the automation action",
+                                "example": "58b9aa09-969e-4d46-8d4b-8f6c0aa91de8"
+                              }
+                            },
+                            "required": [
+                              "subscriptionId"
+                            ]
                           }
                         },
                         "required": [
-                          "subscriptionId"
+                          "custom_action_config"
                         ]
                       }
                     },

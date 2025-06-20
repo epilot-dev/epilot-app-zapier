@@ -1,3 +1,3 @@
 export const config = {
-  API_URL: import.meta.env.VITE_API_URL || 'https://qfrxbcnl56.execute-api.eu-central-1.amazonaws.com',
+  API_URL: import.meta.env.VITE_API_URL || 'https://zapier-app.sls.epilot.io',
 }
