@@ -1,7 +1,7 @@
-<h1 align="center"><a href="https://marketplace.epilot.cloud/en/apps/zapier"><img alt="epilot-logo" src="./logo.png" width="200"><br>Zapier App for epilot</a></h1>
+<h1 align="center"><a href="https://marketplace.epilot.cloud/en/apps/zapier"><img src="./zapier.png" alt="zapier logo"><br>Zapier App for epilot</a></h1>
 
 <p align="center">
-  <a href="https://marketplace.epilot.cloud/en/apps/zapier">Marketplace</a> •
+  <a href="https://marketplace.epilot.cloud/en/apps/zapier">Install from Marketplace</a> •
   <a href="https://docs.epilot.io/docs/integrations/zapier">Zapier Integration Docs</a> •
   <a href="https://docs.epilot.io/apps/">Apps Developer Docs</a>
 </p>
