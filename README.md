@@ -1,18 +1,26 @@
-<h1 align="center"><a href="https://marketplace.epilot.cloud/en/apps/zapier"><img src="./zapier.png" alt="zapier logo"><br>Zapier App for epilot</a></h1>
+<h1 align="center"><a href="https://marketplace.epilot.cloud/en/apps/zapier"><img src="./zapier.png" alt="zapier logo" width="100"><br>Zapier App for epilot</a></h1>
 
 <p align="center">
-  <a href="https://marketplace.epilot.cloud/en/apps/zapier">Install from Marketplace</a> •
+  <a href="https://marketplace.epilot.cloud/en/apps/zapier">epilot Marketplace</a> •
   <a href="https://docs.epilot.io/docs/integrations/zapier">Zapier Integration Docs</a> •
   <a href="https://docs.epilot.io/apps/">Apps Developer Docs</a>
 </p>
 
+## Prerequisites
+
+To run or deploy this app, you need:
+
+- **AWS access** with permissions to deploy SST apps (Lambda, DynamoDB, API Gateway, CloudFormation)
+- An [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) profile configured with credentials
+- Node.js (>=18) and npm
+
 ## Quick Start
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/epilot-dev/epilot-app-zapier.git
 cd epilot-app-zapier
-npm install
-npx sst dev
+npm i
+npm run dev
 ```
 
 ## Project Overview
@@ -24,7 +32,7 @@ This app uses the [@epilot/app-sdk](https://www.npmjs.com/package/@epilot/app-sd
 ## Project Structure
 
 - api/           SST backend (Lambda functions, DynamoDB, OpenAPI spec)
-- app/           Frontend (if any)
+- app/           App Frontend (epilot App Bridge)
 - openapi.yml    API specification
 - sst.config.ts  SST configuration
 - package.json   Workspace dependencies & scripts
