@@ -31,20 +31,19 @@ This app uses the [@epilot/app-sdk](https://www.npmjs.com/package/@epilot/app-sd
 
 ## Project Structure
 
-- api/           SST backend (Lambda functions, DynamoDB, OpenAPI spec)
-- app/           App Frontend (epilot App Bridge)
-- openapi.yml    API specification
-- sst.config.ts  SST configuration
-- package.json   Workspace dependencies & scripts
+- `api/`           SST backend (Lambda functions, DynamoDB, OpenAPI spec)
+- `app/`           App Frontend (epilot App Bridge)
+- `openapi.yml`    API specification
+- `sst.config.ts`  SST configuration
+- `package.json`   Workspace dependencies & scripts
 
 ## Development Commands
 
-- npm run openapi   Generate API types from openapi.yml
-- npm run dev       Start local dev (SST + live Lambda)
-- npm run build     Build the SST app
-- npm run deploy    Deploy to AWS
-- npm run remove    Remove the deployed stack
-- npm run console   Open AWS Console in default browser
+- `npm run dev`       Start dev (SST + live Lambda)
+- `npm run openapi`   Generate API types from openapi.yml
+- `npm run build`     Build the app
+- `npm run zip`       Create an `app.zip` package to upload frontend to epilot
+- `npm run deploy`    Deploy to AWS
 
 ## Resources
 
