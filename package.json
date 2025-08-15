@@ -7,7 +7,7 @@
     "build": "sst build",
     "console": "sst console",
     "deploy": "sst deploy",
-    "dev": "sst dev",
+    "dev": "sst dev --stage dev",
     "remove": "sst remove",
     "typecheck": "tsc --noEmit",
     "openapi": "openapi read openapi.yml --json > api/openapi.json && openapi read openapi.yml --json > app/src/openapi.json && openapi typegen openapi.yml --backend > api/openapi.d.ts && openapi typegen openapi.yml --client > app/src/openapi.d.ts",
